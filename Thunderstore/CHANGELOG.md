@@ -1,4 +1,5 @@
-| `Version` | `Update Notes`                |
-|-----------|-------------------------------|
-| 1.0.1     | - Update for Valheim 0.217.22 |
-| 1.0.0     | - Initial Release             |
+| `Version` | `Update Notes`                                                                                                                                                                                                             |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1.0.2     | - Fix ability for the configurations to show in the [Configuration Manager](https://valheim.thunderstore.io/package/Azumatt/Official_BepInEx_ConfigurationManager/). Not sure what happened there lmao, but it's fine now. |
+| 1.0.1     | - Update for Valheim 0.217.22                                                                                                                                                                                              |
+| 1.0.0     | - Initial Release                                                                                                                                                                                                          |

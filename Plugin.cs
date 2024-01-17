@@ -13,10 +13,11 @@ using UnityEngine;
 namespace HaulersHelper
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
+    [BepInDependency("com.bepis.bepinex.configurationmanager", BepInDependency.DependencyFlags.SoftDependency)]
     public class HaulersHelperPlugin : BaseUnityPlugin
     {
         internal const string ModName = "HaulersHelper";
-        internal const string ModVersion = "1.0.1";
+        internal const string ModVersion = "1.0.2";
         internal const string Author = "Azumatt";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";
@@ -25,13 +26,10 @@ namespace HaulersHelper
         internal static string ConnectionError = "";
 
         private readonly Harmony _harmony = new(ModGUID);
+        public static readonly ManualLogSource HaulersHelperLogger = BepInEx.Logging.Logger.CreateLogSource(ModName);
 
-        public static readonly ManualLogSource HaulersHelperLogger =
-            BepInEx.Logging.Logger.CreateLogSource(ModName);
+        private static readonly ConfigSync ConfigSync = new(ModGUID) { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion };
 
-        private static readonly ConfigSync ConfigSync = new(ModGUID)
-            { DisplayName = ModName, CurrentVersion = ModVersion, MinimumRequiredVersion = ModVersion };
-        
         internal static readonly List<string> Wagons = new();
         internal static readonly Dictionary<string, ConfigEntry<float>> WagonDetachDistanceTweakConfigs = new();
         internal static readonly Dictionary<string, ConfigEntry<Vector3>> WagonAttachOffsetTweakConfigs = new();
@@ -48,7 +46,7 @@ namespace HaulersHelper
         internal static readonly Dictionary<string, ConfigEntry<float>> WagonMaxVolVelTweakConfigs = new();
         internal static readonly Dictionary<string, ConfigEntry<float>> WagonAudioChangeSpeedTweakConfigs = new();
 
-        internal static readonly Regex CleaningRegex = new("['[\"\\]]");
+        internal static readonly Regex CleaningRegex = new("""['\["\]]""");
         internal static HaulersHelperPlugin ModContext = null!;
 
         public enum Toggle
@@ -103,25 +101,17 @@ namespace HaulersHelper
 
         private static ConfigEntry<Toggle> _serverConfigLocked = null!;
 
-        internal ConfigEntry<T> config<T>(string group, string name, T value, ConfigDescription description,
-            bool synchronizedSetting = true)
+        internal ConfigEntry<T> config<T>(string group, string name, T value, ConfigDescription description, bool synchronizedSetting = true)
         {
-            ConfigDescription extendedDescription =
-                new(
-                    description.Description +
-                    (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"),
-                    description.AcceptableValues, description.Tags);
+            ConfigDescription extendedDescription = new(description.Description + (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"), description.AcceptableValues, description.Tags);
             ConfigEntry<T> configEntry = Config.Bind(group, name, value, extendedDescription);
-            //var configEntry = Config.Bind(group, name, value, description);
-
             SyncedConfigEntry<T> syncedConfigEntry = ConfigSync.AddConfigEntry(configEntry);
             syncedConfigEntry.SynchronizedConfig = synchronizedSetting;
 
             return configEntry;
         }
 
-        internal ConfigEntry<T> config<T>(string group, string name, T value, string description,
-            bool synchronizedSetting = true)
+        internal ConfigEntry<T> config<T>(string group, string name, T value, string description, bool synchronizedSetting = true)
         {
             return config(group, name, value, new ConfigDescription(description), synchronizedSetting);
         }
@@ -130,7 +120,7 @@ namespace HaulersHelper
         {
             [UsedImplicitly] public string? Category;
             [UsedImplicitly] public int? Order;
-            [UsedImplicitly] public bool? Browsable = false;
+            [UsedImplicitly] public bool? Browsable = true;
         }
 
         class AcceptableShortcuts : AcceptableValueBase
@@ -142,8 +132,7 @@ namespace HaulersHelper
             public override object Clamp(object value) => value;
             public override bool IsValid(object value) => true;
 
-            public override string ToDescriptionString() =>
-                "# Acceptable values: " + string.Join(", ", KeyboardShortcut.AllKeyCodes);
+            public override string ToDescriptionString() => "# Acceptable values: " + string.Join(", ", UnityInput.Current.SupportedKeyCodes);
         }
 
         #endregion

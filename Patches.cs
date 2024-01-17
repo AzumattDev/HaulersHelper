@@ -9,8 +9,7 @@ internal static class FetchVagonPiecesObjectDB
     [HarmonyPriority(Priority.Last)]
     private static void Postfix(ObjectDB __instance)
     {
-        if (__instance.GetItemPrefab("Hammer")?.GetComponent<ItemDrop>()?.m_itemData.m_shared.m_buildPieces is
-            { } pieces)
+        if (__instance.GetItemPrefab("Hammer")?.GetComponent<ItemDrop>()?.m_itemData.m_shared.m_buildPieces is { } pieces)
         {
             Functions.GetThemWagons(pieces.m_pieces);
         }

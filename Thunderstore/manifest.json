@@ -1,9 +1,9 @@
 {
   "name": "HaulersHelper",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://discord.gg/pdHgy6Bsng",
   "description": "A mod that allows you to control the values on carts or things that use the cart script. Supports custom carts.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2200"
+    "denikson-BepInExPack_Valheim-5.4.2202"
   ]
 }
