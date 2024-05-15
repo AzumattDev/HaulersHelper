@@ -17,7 +17,7 @@ namespace HaulersHelper
     public class HaulersHelperPlugin : BaseUnityPlugin
     {
         internal const string ModName = "HaulersHelper";
-        internal const string ModVersion = "1.0.2";
+        internal const string ModVersion = "1.0.3";
         internal const string Author = "Azumatt";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";
